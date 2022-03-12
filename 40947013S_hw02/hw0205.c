@@ -2,7 +2,7 @@
 
 typedef struct _sVector
 {
-    uint8_t type; // 1: Cartesian coordinates; 2: polar coordinates
+    uint8_t type;
     union Component
     {
         struct _sCartesian
@@ -17,6 +17,16 @@ typedef struct _sVector
         } p;
     } data;
 }sVector;
+
+sVector * myvector_init()
+{
+    
+}
+
+int myvector_set( sVector *pVector , uint8_t type, double a, double b )
+{
+    
+}
 
 int main()
 {

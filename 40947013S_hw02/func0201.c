@@ -1,8 +1,7 @@
 #include "mysplit.h"
 #include "mymatch.h"
 
-int mystrsplit(char ***ppList , int *pCounter , const char *pStr, const char *
-pSeparator)
+int mystrsplit(char ***ppList , int *pCounter , const char *pStr, const char *pSeparator)
 {
     if(pStr == NULL || pSeparator == NULL) return -1; //無東西切割
     char *copy = calloc(strlen(pStr)+1, sizeof(char)); 
@@ -96,17 +95,17 @@ int mymatch(char ***pppList , const char *pStr, const char *pPattern)
 {
     char **word, *str;
     int size = 0, count = 0; 
-    mystrsplit(&word, &size, pPattern, " ");
+    mystrsplit(&word, &size, pStr, " ");
     for(int i = 0; i < size; i++)
     {
         if(word[i] == 0) return -1;
-        else if(match(word[i], pStr)) count++;
+        else if(match(word[i], pPattern)) count++;
     }
     *pppList = calloc(count, sizeof(char*));
     count = 0;
     for(int i = 0; i < size; i++)
     {
-        if(match(word[i], pStr)) 
+        if(match(word[i], pPattern)) 
         {
             *(*pppList+count) = word[i];
             count++;
