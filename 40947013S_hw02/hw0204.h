@@ -26,6 +26,8 @@ void mixed_mul(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
 void mixed_div(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2);
 int operator_counter(char *q);
 void categorize(char *q, int32_t *position, bool *priority);
-bool set(char *q, int32_t *position, int n, sMixedNumber *p)
-;
+bool set(char *q, int32_t *position, int n, sMixedNumber *p);
+void calculator(sMixedNumber *r1,sMixedNumber *r2, int i);
+int kind_of_calculate(char c);
+
 #endif

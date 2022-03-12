@@ -179,3 +179,30 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
     }
     return true;
 }
+
+void calculator(sMixedNumber *r1,sMixedNumber *r2, int i)
+{
+    switch(i)
+    {
+        case 1:
+        { mixed_add(r1, *r1, *r2); *r2 = *r1; break; }
+        case 2:
+        { mixed_sub(r1, *r1, *r2); *r2 = *r1; break; }
+        case 3:
+        { mixed_mul(r1, *r1, *r2); *r2 = *r1; break; }
+        case 4:
+        { mixed_div(r1, *r1, *r2); *r2 = *r1; break; }
+    }
+}
+
+int kind_of_calculate(char c)
+{
+    switch(c)
+    {
+        case '+': return 1;
+        case '-': return 2;
+        case '*': return 3;
+        case '/': return 4;        
+    }
+    return -1;
+}
