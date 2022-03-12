@@ -6,6 +6,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdint.h>
+#include "mymatch.h"
+
+#define exit_program printf("Invaild input. Exit\n"),\
+exit(0);
 
 typedef struct _sMixedNumber 
 {
@@ -20,5 +24,8 @@ void mixed_add(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
 void mixed_sub(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2);
 void mixed_mul(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2);
 void mixed_div(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2);
-
+int operator_counter(char *q);
+void categorize(char *q, int32_t *position, bool *priority);
+bool set(char *q, int32_t *position, int n, sMixedNumber *p)
+;
 #endif

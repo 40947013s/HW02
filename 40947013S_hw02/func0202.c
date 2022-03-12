@@ -1,7 +1,5 @@
 #include "hw0202.h"
 
-#
-
 void printer(const IEEE ieee, double target)
 {
     printf("Sign : %d\n", ieee.sign);
