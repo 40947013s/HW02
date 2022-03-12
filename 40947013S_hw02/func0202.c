@@ -1,5 +1,7 @@
 #include "hw0202.h"
 
+#
+
 void printer(const IEEE ieee, double target)
 {
     printf("Sign : %d\n", ieee.sign);
@@ -36,7 +38,8 @@ void DtoB(int32_t num, int32_t *arr, int32_t size) //整數部位
     int32_t count = 0;
     while(num)
     {
-        arr[count++] = num % 2;
+        arr[count] = num % 2;
+        count++;
         num = num >> 1;
     }
 }
@@ -65,6 +68,7 @@ void change(IEEE *var, double target)
     if(target >= 0) var->sign = 0;
     else var->sign = 1, target = fabs(target);
     //取出整數位
+        
     int32_t integer = target;
     int32_t size_int = info_num(integer);
     int32_t *front = calloc(size_int, sizeof(int));
@@ -87,6 +91,6 @@ void change(IEEE *var, double target)
     DtoB(exponent, exp, size_exp);
     for(int i = 0; i < 11; i++)
         var->exponent[i] = 0;
-    for(int i = size_exp-1, count_down = 10; i >= 0; i--)
+    for(int i = 0, count_down = 10; i < size_exp; i++)
         var->exponent[count_down--] = exp[i];
 }
