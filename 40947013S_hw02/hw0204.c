@@ -1,5 +1,6 @@
 #include "hw0204.h"
 #include "mymatch.h"
+
 int operator_counter(char *q)
 {
     int count = 0;
@@ -37,14 +38,13 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
             mixed_set( &p[i], 0, 0, 0);
             continue;
         }
-        int j = start, k, a = 0, b, c;
+        int j = start, k, a = 0, b = 0, c = 0;
         for(; q[j] != 92 && j < end; j++);
         if(q[j] != 92) return false;
         copy += (j-start+1);
-        printf("%s\n", copy);
         for(k = start; k < j; k++)
         {
-            if(q[k] >= '0' && q[k] <= '9') a = a*10+q[k];
+            if(q[k] >= '0' && q[k] <= '9') a = a*10+(q[k]-48);
             else return false;
         }
         
@@ -52,16 +52,15 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
         for(; q[j] != '{'; j++); 
         for(k = j+1; q[k] != '}'; k++)
         {
-            if(q[k] >= '0' && q[k] <= '9') b = b*10+q[k];
+            if(q[k] >= '0' && q[k] <= '9') b = b*10+(q[k]-48);
             else return false;
         }
         if(q[k+1] != '{') return false;
-        for(k++; k < end; k++)
+        for(k+=2; k < end-1; k++)
         {
-            printf("%c", q[k]);
-            if(q[k] >= '0' && q[k] <= '9') c = c*10+q[k];
+            if(q[k] >= '0' && q[k] <= '9') c = c*10+(q[k]-48);
             else return false;
-        }printf("\n"); 
+        }
         mixed_set( &p[i], a, b, c);
     }
     return true;
@@ -82,8 +81,6 @@ int main()
     int32_t *position = calloc(operand_size-1, sizeof(int32_t));
     bool *priority = calloc(operand_size-1, sizeof(bool));
     categorize(q, position, priority);
-    /*for(int i = 0; i < operand_size-1; i++)
-        printf("%d %d\n", position[i], position[i]);*/
     set(q, position, operand_size, p);
     mixed_print(p[0]);
     /*sMixedNumber one;
