@@ -2,10 +2,8 @@
 
 int mixed_set(sMixedNumber *pNumber, int32_t a, int32_t b, int32_t c)
 {
-    if(b != 0 && c == 0) return -1;
-    if(b == 0 && c != 0) return -1;
-    if(a != 0 && (b < 0 || c < 0)) return -1;
-    if(b >= c) return -1;
+    if(b >= c || c < 0 || (a > 0 && b < 0)) return -1;
+    if(b*c == 0 && b+c != 0) return -1;
     pNumber->a = a, pNumber->b = b, pNumber->c = c;
     return 0;
 }
@@ -25,18 +23,17 @@ void mixed_add(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
     if(r2.a >= 0) up_2 = (r2.a * r2.c +r2.b) * r1.c;
     else up_2 = (r2.a * r2.c - r2.b) * r1.c;
     
-    int32_t up =  up_1 + up_2;
-    pNumber->a = up / low;
-    up -= pNumber->a * low;
-    
+    int32_t up =  up_1 + up_2;    
     int32_t i = 2;
-    while(i < up)
+    while(i < abs(up))
     {
         if(low % i == 0 && up % i == 0)
             low /= i, up /= i;
         else i++;
     }
-    pNumber->b = up;
+    pNumber->a = up / low;
+    up -= pNumber->a * low;
+    pNumber->b = pNumber->a ? abs(up) : up;
     pNumber->c = low;
 }
 
@@ -49,18 +46,17 @@ void mixed_sub(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
     if(r2.a >= 0) up_2 = (r2.a * r2.c + r2.b) * r1.c;
     else up_2 = (r2.a * r2.c - r2.b) * r1.c;
     int32_t up =  up_1 - up_2 ;
-    
-    pNumber->a = up / low;
-    up -= pNumber->a * low;
     int32_t i = 2;
-    while(i < up)
-    {
+    while(i < abs(up))
+    {        
         if(low % i == 0 && up % i == 0)
             low /= i, up /= i;
         else
             i++;
     }
-    pNumber->b = up;
+    pNumber->a = up / low;
+    up -= pNumber->a * low;
+    pNumber->b = pNumber->a ? abs(up) : up;
     pNumber->c = low;
 }
 
@@ -86,7 +82,7 @@ void mixed_mul(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
     } 
     pNumber->a = up / low;  
     up -= pNumber->a * low;
-    pNumber->b = abs(up);
+    pNumber->b = pNumber->a ? abs(up) : up;
     pNumber->c = low;
 }
 
@@ -109,7 +105,7 @@ void mixed_div(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
     } 
     pNumber->a = up / low;  
     up -= pNumber->a * low;
-    pNumber->b = abs(up);
+    pNumber->b = pNumber->a ? abs(up) : up;
     pNumber->c = low;
 }
 
@@ -160,7 +156,7 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
             if(k == start && q[k] == '-') sign_of_a = true;            
             else if(q[k] >= '0' && q[k] <= '9') a = a*10+(q[k]-48);
             else return false;
-        }if(sign_of_a) a *= -1;
+        }if(sign_of_a && a!= 0) a *= -1;
         
         if(!match(copy, "frac{*}{*}")) return false;
         for(; q[j] != '{'; j++); 
@@ -168,7 +164,7 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
         {
             if(q[k] >= '0' && q[k] <= '9') b = b*10+(q[k]-48);
             else return false;
-        }
+        }if(sign_of_a && a == 0) b *= -1;
         if(q[k+1] != '{') return false;
         for(k+=2; k < end-1; k++)
         {

@@ -23,8 +23,7 @@ int main()
     for(int i = 0; i < operand_size-1; i++)
         if(priority[i] == 0)
             calculator(&p[i], &p[i+1], kind_of_calculate(q[position[i]]));
-    for(int i = 0; i < operand_size-1; i++)
     printf("A:  ");    
-    mixed_print(p[i]);
+    mixed_print(p[0]);
     return 0;
 }
