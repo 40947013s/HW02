@@ -10,12 +10,19 @@ int mixed_set(sMixedNumber *pNumber, int32_t a, int32_t b, int32_t c)
 
 int mixed_print(const sMixedNumber number)
 {
-    if(number.a == 0)
-        printf("\frac{%d}{%d}\n", number.b, number.c);
-    else if(number.a < 0)
-        printf("(%d\frac{%d}{%d})\n", number.a, number.b, number.c);
-    else
-        printf( "%d\frac{%d}{%d}\n", number.a, number.b, number.c);
+    if(number.b == 0)
+        if(number.a >= 0) printf("%d\n", number.a);
+        else printf("(%d)\n", number.a);
+    else 
+    {
+        if(number.a == 0) 
+            printf("%cfrac{%d}{%d}\n", 92, number.b, number.c);
+        else if(number.a > 0)
+            printf("%d%cfrac{%d}{%d}\n", number.a, 92, number.b, number.c);
+        else
+            printf("(%d%cfrac{%d}{%d})\n", number.a, 92, number.b, number.c);
+    }
+    
     return true;
 }
 
@@ -41,7 +48,7 @@ void mixed_add(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
     up -= side * low;
     pNumber->a = sign ? -side : side;
     pNumber->b = (sign && side == 0) ? -up : up;
-    pNumber->c = low;
+    pNumber->c = pNumber->b == 0 ? 1 : low;
 }
 
 void mixed_sub(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2)
@@ -66,7 +73,7 @@ void mixed_sub(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
     up -= side * low;
     pNumber->a = sign ? -side : side;
     pNumber->b = (sign && side == 0) ? -up : up;
-    pNumber->c = low;
+    pNumber->c = pNumber->b == 0 ? 1 : low;
 }
 
 void mixed_mul(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2)
@@ -89,7 +96,7 @@ void mixed_mul(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
     up -= side * low;
     pNumber->a = sign ? -side : side;
     pNumber->b = (sign && side == 0) ? -up : up;
-    pNumber->c = low;
+    pNumber->c = pNumber->b == 0 ? 1 : low;
 }
 
 void mixed_div(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2)
@@ -112,7 +119,7 @@ void mixed_div(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber 
     up -= side * low;
     pNumber->a = sign ? -side : side;
     pNumber->b = (sign && side == 0) ? -up : up;
-    pNumber->c = low;
+    pNumber->c = pNumber->b == 0 ? 1 : low;
 }
 
 int operator_counter(char *q)
@@ -208,10 +215,7 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
 }
 
 void calculator(sMixedNumber *r1,sMixedNumber *r2, int i)
-{
-    printf("%d %d %d %d ", r1->a, r1->b, r1->c, i);
-    printf("%d %d %d\n", r2->a, r2->b, r2->c);
-    
+{    
     switch(i)
     {
         case 1:
