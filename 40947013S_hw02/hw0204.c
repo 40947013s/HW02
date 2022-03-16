@@ -5,6 +5,7 @@ int main()
     char *q = calloc(4096, sizeof(char));
     printf("Q:  ");    
     fgets(q, 4096, stdin);
+    
     if(strlen(q) == 1) exit_program;
     q[strlen(q)-1] = 0;
     int32_t operand_size = operator_counter(q)+1;
@@ -21,10 +22,13 @@ int main()
     for(int i = 0; i < operand_size-1; i++)
         if(priority[i])
             calculator(&p[i], &p[i+1], kind_of_calculate(q[position[i]]));
+    
     for(int i = 0; i < operand_size-1; i++)
         if(priority[i] == 0)
             calculator(&p[i], &p[i+1], kind_of_calculate(q[position[i]]));
+        else mixed_cpy(&p[i], &p[i+1]);
+    
     printf("A:  ");    
-    mixed_print(p[0]);
+    mixed_print(p[operand_size-1]);
     return 0;
 }

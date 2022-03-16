@@ -10,102 +10,108 @@ int mixed_set(sMixedNumber *pNumber, int32_t a, int32_t b, int32_t c)
 
 int mixed_print(const sMixedNumber number)
 {
-    printf( "(%d,%d,%d)\n", number.a, number.b, number.c);
+    if(number.a == 0)
+        printf("\frac{%d}{%d}\n", number.b, number.c);
+    else if(number.a < 0)
+        printf("(%d\frac{%d}{%d})\n", number.a, number.b, number.c);
+    else
+        printf( "%d\frac{%d}{%d}\n", number.a, number.b, number.c);
     return true;
 }
 
 void mixed_add(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2)
 {
+    bool sign = false;
     int32_t low = r1.c * r2.c;
     int32_t up_1 = 0 , up_2 = 0;
-    if(r1.a >= 0) up_1 = (r1.a * r1.c + r1.b) * r2.c;
-    else up_1 = (r1.a * r1.c - r1.b) * r2.c;
-    if(r2.a >= 0) up_2 = (r2.a * r2.c +r2.b) * r1.c;
-    else up_2 = (r2.a * r2.c - r2.b) * r1.c;
+    up_1 = r1.a >= 0 ? (r1.a*r1.c+r1.b)*r2.c : (r1.a*r1.c-r1.b)*r2.c;
+    up_2 = r2.a >= 0 ? (r2.a*r2.c+r2.b)*r1.c : (r2.a*r2.c-r2.b)*r1.c;   
     
-    int32_t up =  up_1 + up_2;    
+    int32_t up =  up_1 + up_2;
+    sign = up < 0 ? true : false;
+    up = abs(up);
     int32_t i = 2;
-    while(i < abs(up))
+    while(i < (up <= low ? up : low))
     {
         if(low % i == 0 && up % i == 0)
             low /= i, up /= i;
         else i++;
     }
-    pNumber->a = up / low;
-    up -= pNumber->a * low;
-    pNumber->b = pNumber->a ? abs(up) : up;
+    int32_t side = up/low;
+    up -= side * low;
+    pNumber->a = sign ? -side : side;
+    pNumber->b = (sign && side == 0) ? -up : up;
     pNumber->c = low;
 }
 
 void mixed_sub(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2)
 {
+    bool sign = false;
     int32_t low = r1.c * r2.c;
     int32_t up_1 = 0 , up_2 = 0;
-    if(r1.a >= 0) up_1 = (r1.a * r1.c + r1.b) * r2.c;
-    else up_1 = (r1.a * r1.c - r1.b) * r2.c;
-    if(r2.a >= 0) up_2 = (r2.a * r2.c + r2.b) * r1.c;
-    else up_2 = (r2.a * r2.c - r2.b) * r1.c;
-    int32_t up =  up_1 - up_2 ;
+    up_1 = r1.a >= 0 ? (r1.a*r1.c+r1.b)*r2.c : (r1.a*r1.c-r1.b)*r2.c;
+    up_2 = r2.a >= 0 ? (r2.a*r2.c+r2.b)*r1.c : (r2.a*r2.c-r2.b)*r1.c;   
+    
+    int32_t up =  up_1 - up_2;
+    sign = up < 0 ? true : false;
+    up = abs(up);
     int32_t i = 2;
-    while(i < abs(up))
-    {        
+    while(i < (up <= low ? up : low))
+    {
         if(low % i == 0 && up % i == 0)
             low /= i, up /= i;
-        else
-            i++;
+        else i++;
     }
-    pNumber->a = up / low;
-    up -= pNumber->a * low;
-    pNumber->b = pNumber->a ? abs(up) : up;
+    int32_t side = up/low;
+    up -= side * low;
+    pNumber->a = sign ? -side : side;
+    pNumber->b = (sign && side == 0) ? -up : up;
     pNumber->c = low;
 }
 
 void mixed_mul(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2)
 {
-    int32_t up_1 = 0 , up_2 = 0;
-    if( r1.a >= 0) up_1 = (r1.a * r1.c + r1.b);
-    else up_1 = (r1.a * r1.c - r1.b);
-    if(r2.a >= 0) up_2 = (r2.a * r2.c + r2.b);
-    else up_2 = (r2.a * r2.c - r2.b);
+    bool sign = false;
+    int32_t up_1 = r1.a >= 0 ? r1.a*r1.c+r1.b : r1.a*r1.c- r1.b;
+    int32_t up_2 = r2.a >= 0 ? r2.a*r2.c+r2.b : r2.a*r2.c- r2.b;    
     
-    int32_t up = up_1 * up_2;
-    int32_t low = r1.c * r2.c;
-    if(up * low < 0)
-        up = -abs(up), low = abs(low);
-    
+    int32_t up = up_1 * up_2, low = r1.c * r2.c;
+    sign = up*low >= 0 ? false : true;
+    up = abs(up), low = abs(low);
     int32_t i = 2;
-    while(i < (up>low ? abs(up):low))
+    while(i < (up <= low ? up : low))
     {
         if(low % i == 0 && up % i == 0)
             low /= i, up/= i;
         else i++;
     } 
-    pNumber->a = up / low;  
-    up -= pNumber->a * low;
-    pNumber->b = pNumber->a ? abs(up) : up;
+    int32_t side = up/low;
+    up -= side * low;
+    pNumber->a = sign ? -side : side;
+    pNumber->b = (sign && side == 0) ? -up : up;
     pNumber->c = low;
 }
 
 void mixed_div(sMixedNumber *pNumber, const sMixedNumber r1, const sMixedNumber r2)
 {
-    int32_t low = 0 , up = 0;
-    if(r2.a >= 0) low = (r2.a * r2.c + r2.b) * r1.c;
-    else low = (r2.a * r2.c - r2.b) * r1.c;
-    if(r1.a >= 0) up = (r1.a * r1.c + r1.b) * r2.c;
-    else up = (r1.a * r1.c - r1.b) * r2.c;
-    if(up * low < 0)
-        up = -abs(up), low = abs(low);
+    bool sign = false;
+    int32_t up = r1.a >= 0 ? (r1.a*r1.c+r1.b)*r2.c : (r1.a*r1.c-r1.b)*r2.c;
+    int32_t low = r2.a >= 0 ? (r2.a*r2.c+r2.b)*r1.c : (r2.a*r2.c-r2.b)*r1.c; 
+   
+    sign = up*low >= 0 ? false : true;
+    up = abs(up), low = abs(low);
     
     int32_t i = 2;
-    while(i < (up>low ? abs(up):low))
+    while(i < (abs(up) <= abs(low) ? abs(up) : abs(low)))
     {
         if(low % i == 0 && up % i == 0)
             low /= i, up/= i;
         else i++;
     } 
-    pNumber->a = up / low;  
-    up -= pNumber->a * low;
-    pNumber->b = pNumber->a ? abs(up) : up;
+    int32_t side = up/low;
+    up -= side * low;
+    pNumber->a = sign ? -side : side;
+    pNumber->b = (sign && side == 0) ? -up : up;
     pNumber->c = low;
 }
 
@@ -165,7 +171,6 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
             if(sign && a == 0) return false;
             
             if(mixed_set(&p[i], a, 0, 1) == -1) return false;
-            //mixed_print(p[i]);
             continue;
         }
         copy += (j-start+1);
@@ -198,13 +203,15 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
             else return false;
         }
         if(mixed_set( &p[i], a, b, c) == -1) return false;
-        //mixed_print(p[i]);
     }
     return true;
 }
 
 void calculator(sMixedNumber *r1,sMixedNumber *r2, int i)
 {
+    printf("%d %d %d %d ", r1->a, r1->b, r1->c, i);
+    printf("%d %d %d\n", r2->a, r2->b, r2->c);
+    
     switch(i)
     {
         case 1:
@@ -216,7 +223,11 @@ void calculator(sMixedNumber *r1,sMixedNumber *r2, int i)
         case 4:
         { mixed_div(r1, *r1, *r2); *r2 = *r1; break; }
     }
-    printf("%d %d %d\n", r1->a, r1->b, r1->c);
+}
+
+void mixed_cpy(sMixedNumber *r1,sMixedNumber *r2)
+{
+    *r2 = *r1;
 }
 
 int kind_of_calculate(char c)
