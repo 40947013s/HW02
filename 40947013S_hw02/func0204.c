@@ -2,8 +2,8 @@
 
 int mixed_set(sMixedNumber *pNumber, int32_t a, int32_t b, int32_t c)
 {
-    if(b >= c || c < 0 || (a > 0 && b < 0)) return -1;
-    if(b*c == 0 && b+c != 0) return -1;
+    if(b >= c || c <= 0 || (a > 0 && b < 0)) return -1;
+    if(b == 0 && c != 1) return -1;
     pNumber->a = a, pNumber->b = b, pNumber->c = c;
     return 0;
 }
@@ -113,7 +113,7 @@ int operator_counter(char *q)
 {
     int count = 0;
     for(int i = 1; i < strlen(q)-1; i++)
-        if(q[i] == '+'|| q[i] == '-'||q[i] == '*'|| q[i] == '/')
+        if((q[i] == '+'|| q[i] == '-'||q[i] == '*'|| q[i] == '/') && q[i-1] != '(')
             count++, i++;
     return count;
 }
@@ -122,10 +122,14 @@ void categorize(char *q, int32_t *position, bool *priority)
     int count = 0;
     for(int i = 1; i < strlen(q)-1; i++)
     {
-        if(q[i] == '+'|| q[i] == '-')
-            position[count] = i, priority[count++] = false, i++;
+        if((q[i] == '+'|| q[i] == '-') && q[i-1] != '(')
+        {
+            position[count] = i, priority[count++] = false; i++;
+        }
         if(q[i] == '*'|| q[i] == '/')
-            position[count] = i, priority[count++] = true, i++;
+        {
+            position[count] = i, priority[count++] = true; i++;
+        }
     }        
 }
 
@@ -138,40 +142,63 @@ bool set(char *q, int32_t *position, int n, sMixedNumber *p)
         if(end - start == 0) return false;        
         char *copy = calloc(end-start, sizeof(char));
         int count = 0;
-        for(int j = start; j < end; j++)
-            copy[count++] = q[j];
+        bool sign = false;
         
-        if(copy[0] == '0' && count == 1) 
+        //判斷是否為整數為負數    
+        if(q[start] == '(' && q[end-1] == ')' && q[start+1] == '-')
         {
-            mixed_set( &p[i], 0, 0, 0);
-            continue;
+            start+=2; end--; sign = true;
+        }
+        for(int j = start; j < end; j++)
+        {
+            copy[count++] = q[j];
         }
         int j = start, k, a = 0, b = 0, c = 0;
         for(; q[j] != 92 && j < end; j++);
-        if(q[j] != 92) return false;
-        copy += (j-start+1);
-        bool sign_of_a = 0;
-        for(k = start; k < j; k++)
+        if(q[j] != 92)
         {
-            if(k == start && q[k] == '-') sign_of_a = true;            
-            else if(q[k] >= '0' && q[k] <= '9') a = a*10+(q[k]-48);
+            for(int k = start; k < end; k++)
+            {   
+                if(q[k] >= '0' && q[k] <= '9') a = a*10+(q[k]-48);
+                else return false;
+            }if(sign && a != 0) a *= -1;
+            if(sign && a == 0) return false;
+            
+            if(mixed_set(&p[i], a, 0, 1) == -1) return false;
+            //mixed_print(p[i]);
+            continue;
+        }
+        copy += (j-start+1);
+        for(k = start; k < j; k++)
+        { 
+            if(k == start && q[k] == '-') sign = true;
+            if(q[k] >= '0' && q[k] <= '9') a = a*10+(q[k]-48);
             else return false;
-        }if(sign_of_a && a!= 0) a *= -1;
+        }if(sign && a != 0) a *= -1;
+        if(sign && a == 0) return false;
         
         if(!match(copy, "frac{*}{*}")) return false;
         for(; q[j] != '{'; j++); 
         for(k = j+1; q[k] != '}'; k++)
         {
-            if(q[k] >= '0' && q[k] <= '9') b = b*10+(q[k]-48);
+            if(k == start && q[k] == '-') 
+            {
+                if(sign) return false;
+                sign = true;
+            }
+            else if(q[k] >= '0' && q[k] <= '9') b = b*10+(q[k]-48);
             else return false;
-        }if(sign_of_a && a == 0) b *= -1;
+        }if(sign && b != 0 && a == 0) b *= -1;
+        if(sign && b == 0) return false;
+        
         if(q[k+1] != '{') return false;
         for(k+=2; k < end-1; k++)
         {
             if(q[k] >= '0' && q[k] <= '9') c = c*10+(q[k]-48);
             else return false;
         }
-        mixed_set( &p[i], a, b, c);
+        if(mixed_set( &p[i], a, b, c) == -1) return false;
+        //mixed_print(p[i]);
     }
     return true;
 }
@@ -189,6 +216,7 @@ void calculator(sMixedNumber *r1,sMixedNumber *r2, int i)
         case 4:
         { mixed_div(r1, *r1, *r2); *r2 = *r1; break; }
     }
+    printf("%d %d %d\n", r1->a, r1->b, r1->c);
 }
 
 int kind_of_calculate(char c)

@@ -34,27 +34,56 @@ sVector *myvector_init()
     res->data.p.angle = 0;
 }
 
-int myvector_set( sVector *pVector , uint8_t type, double a, double b )
+int myvector_set(sVector *pVector, uint8_t type, double a, double b)
 {
     if(type != 1 && type != 2) return -1;
     else if(type == 1) 
-    {
-        /*double sum_square = pow(a, 2)+pow(b, 2);
-        pVector->data.p.distance = sqrt(sum_square);
-        pVector->data.p.angle = VAL * atan(a/b);*/
         pVector->data.c.x = a, pVector->data.c.y = b;
-    }
     else
     {
-        pVector->data.p.distance = a, pVector->data.p.angle = b/360.0;
-        /*pVector->data.c.x = a * cos((b/360.0)*VAL);
-        pVector->data.c.y = b * sin((b/360.0)*VAL);*/
-    }
+        pVector->data.p.distance = a;
+        //要處理角度
+        pVector->data.p.angle = b;   
+    }    
+    pVector->type = type;
     return 0;
 }
+
+int myvector_print(const sVector *pVector, uint8_t type)
+{
+    if(type != pVector->type) return -1;
+    if(type == 1) 
+        printf("(%g, %g)\n", pVector->data.c.x,pVector->data.c.y);
+    else
+        printf("(%g, %g-pi)\n", pVector->data.p.distance,pVector->data.p.angle/180.0);
+    return 0;
+}
+
+int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
+{
+    pA->type = pB->type;
+    if(pB->type == pC->type == 1)
+    {
+        pA->data.c.x = pB->data.c.x + pC->data.c.x;
+        pA->data.c.y = pB->data.c.y + pC->data.c.y;        
+    }
+    else if(pB->type == pC->type == 2)
+    {
+        double x = pB->data.p.distance*cos(pB->data.p.angle*VAL) + pC->data.p.distance*cos(pC->data.p.angle*VAL);
+        double y = pB->data.p.distance*sin(pB->data.p.angle*VAL) + pC->data.p.distance*sin(pC->data.p.angle*VAL);
+        pA->data.p.distance = sqrt(pow(x, 2)+pow(y, 2));
+        pA->data.p.angle = atan(x/y)*val;
+    }
+}
+
+
 
 int main()
 {
     sVector *ans = myvector_init();
-    myvector_set(ans, 1, 3, 4);
+    sVector *one = myvector_init();
+    sVector *two = myvector_init();
+    myvector_set(one, 2, 3, 90.0);
+    myvector_set(two, 2, 3, 45.0);
+    myvector_print(ans, 2);
 }

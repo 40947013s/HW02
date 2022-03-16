@@ -14,6 +14,7 @@ int main()
     int32_t *position = calloc(operand_size-1, sizeof(int32_t));
     bool *priority = calloc(operand_size-1, sizeof(bool));
     categorize(q, position, priority);
+
     if(!set(q, position, operand_size, p)) exit_program;
 
 
