@@ -73,5 +73,3 @@ void Kyoko_skill(void *this, void *target);
 
 #include <stdlib.h>
 #include <stddef.h>
-
-
