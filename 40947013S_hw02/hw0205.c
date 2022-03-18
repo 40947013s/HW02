@@ -42,7 +42,7 @@ int myvector_set(sVector *pVector, uint8_t type, double a, double b)
     else
     {
         pVector->data.p.distance = a;
-        //要處理角度
+        if(a < 0 || a >= 360) return -1;        
         pVector->data.p.angle = b;   
     }    
     pVector->type = type;

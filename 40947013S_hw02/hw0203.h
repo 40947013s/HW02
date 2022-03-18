@@ -3,7 +3,7 @@
 typedef struct
 {
     int hp;
-    int (*is_dead)(void *this);
+    int (*is_dead)(void *this); //透過後面的this取得is_dead
 } Entity;
 
 typedef struct
@@ -12,13 +12,13 @@ typedef struct
     char *name;
     char *wish;
     int kimoji;
-    int (*is_dead)(void *this);
-    int (*is_despair) (void *this);
-    void (*do_wish) (void *this);
-    void (*despair) (void *this);
+    int (*is_dead)(void *this); //透過後面的this取得is_dead
+    int (*is_despair) (void *this); //透過後面的this取得is_despair
+    void (*do_wish) (void *this); //透過後面的this取得do_wish
+    void (*despair) (void *this); ////透過後面的this取得despair
 } Shoujo;
 
-typedef void (*Skill) (void *this, void *target);
+typedef void (*Skill) (void *this, void *target); //把一個void的函式命名為(*Skill)並帶入(void *this, void *target)
 
 typedef struct _mhsj Mahoushoujo;
 struct _mhsj
@@ -55,7 +55,7 @@ void Shoujo_despair(void *this);
 Mahoushoujo *Mahoushoujo_ctor(Mahoushoujo *this, const char *name, const char *wish, Skill skill);
 void Mahoushoujo_dtor(Mahoushoujo *this);
 void Mahoushoujo_do_wish(void *this);
-void Mahoushoujo_attack(Mahoushoujo *this, void *enemy);
+void Mahoushoujo_attack(Mahoushoujo *this, void *enemy); 
 void Mahoushoujo_despair(void *this);
 
 Majo *Majo_ctor(Majo *this, const char *name, const char *wish);
@@ -73,3 +73,18 @@ void Kyoko_skill(void *this, void *target);
 
 #include <stdlib.h>
 #include <stddef.h>
+
+// clang-format off
+#define container_of(ptr, type, member)					\
+	({								\
+		const typeof(((type *)0)->member ) *__mptr = (ptr);	\
+		(type *)((char *)__mptr - offsetof(type,member));	\
+	})
+
+#define new(TYPE, args...) TYPE ## _ctor(malloc(sizeof(TYPE)), ## args)
+#define delete(TYPE, ptr)	do				\
+				{				\
+					TYPE ## _dtor(ptr);	\
+					free(ptr);		\
+				}				\
+				while(0)

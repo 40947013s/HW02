@@ -1,6 +1,7 @@
-all: hw0201.o func0201.c hw0202.o func0202.c hw0204.o func0204.c 
+all: hw0201.o func0201.c hw0202.o func0202.c hw0203.o func0203.c hw0204.o func0204.c 
 	gcc func0201.c hw0201.o -o hw0201
 	gcc func0202.c hw0202.o -o hw0202 -lm
+	gcc func0203.c hw0203.o -o hw0203 -lm
 	gcc func0201.c func0204.c hw0204.o -o hw0204 
 
 hw0201: hw0201.c
@@ -10,6 +11,10 @@ hw0201: hw0201.c
 hw0202: hw0202.c
 	gcc -c hw0202.c -o hw0202.o 
 	gcc -shared hw0202.o -o libhw0202.so
+
+hw0203: hw0203.c
+	gcc -c hw0203.c -o hw0203.o 
+	gcc -shared hw0203.o -o libhw0203.so
 
 hw0204: hw0204.c
 	gcc -c func0201.c hw0204.c -o hw0204.o 
