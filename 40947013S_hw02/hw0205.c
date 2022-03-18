@@ -59,21 +59,54 @@ int myvector_print(const sVector *pVector, uint8_t type)
     return 0;
 }
 
+void ctop(sVector *c, double *distance, double *angle)
+{
+    double x = c->data.c.x, y = c->data.c.y;
+    (*distance) = sqrt(pow(x, 2)+pow(y, 2));
+    (*angle) = atan(x/y)*VAL;
+}
+
+void ptoc(sVector *p, double *x, double *y)
+{
+    double d = p->data.p.distance, a = p->data.p.angle;
+    //printf("%lf\n", a);
+    if(a == 0.0) (*x) = d, (*y) = 0;
+    else if(a == 90.0) (*x) = 0, (*y) = d;
+    else if(a == 180.0) (*x) = -d, (*y) = 0;
+    else if(a == 270.0) (*x) = 0, (*y) = -d;
+    else (*x) = d*cos(a*VAL), (*y) = d*sin(a*VAL);
+    printf("%lf %lf", cos(a*VAL), sin(a*VAL));
+}
+
 int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
 {
     pA->type = pB->type;
-    if(pB->type == pC->type == 1)
+    if(pB->type == pC->type)
+    {
+        if(pB->type == 1)
+        {
+            pA->data.c.x = pB->data.c.x + pC->data.c.x;
+            pA->data.c.y = pB->data.c.y + pC->data.c.y; 
+        }
+        else
+        {
+            
+        }
+        return 1;
+    }
+    return 0;
+    /*if(pB->type == pC->type == 1)
     {
         pA->data.c.x = pB->data.c.x + pC->data.c.x;
-        pA->data.c.y = pB->data.c.y + pC->data.c.y;        
+        pA->data.c.y = pB->data.c.y + pC->data.c.y;   
     }
     else if(pB->type == pC->type == 2)
     {
         double x = pB->data.p.distance*cos(pB->data.p.angle*VAL) + pC->data.p.distance*cos(pC->data.p.angle*VAL);
         double y = pB->data.p.distance*sin(pB->data.p.angle*VAL) + pC->data.p.distance*sin(pC->data.p.angle*VAL);
         pA->data.p.distance = sqrt(pow(x, 2)+pow(y, 2));
-        pA->data.p.angle = atan(x/y)*val;
-    }
+        pA->data.p.angle = atan(x/y)*VAL;
+    }*/
 }
 
 
@@ -83,7 +116,13 @@ int main()
     sVector *ans = myvector_init();
     sVector *one = myvector_init();
     sVector *two = myvector_init();
-    myvector_set(one, 2, 3, 90.0);
-    myvector_set(two, 2, 3, 45.0);
-    myvector_print(ans, 2);
+    myvector_set(one, 2, 5, 53);
+    double x, y;
+    ptoc(one, &x, &y);
+    printf("%lf %lf\n", x, y);
+
+    myvector_set(two, 1, 3, 4);
+    double r, a;
+    ctop(two, &r, &a);
+    printf("%lf %lf\n", r, a);
 }
