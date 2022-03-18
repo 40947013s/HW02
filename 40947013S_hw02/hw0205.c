@@ -110,7 +110,12 @@ int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
         }
         else
         {
-            
+            double b1, b2, c1, c2;
+            ptoc(pB, &b1, &b2);
+            ptoc(pC, &c1, &c2);
+            sVector *ans = myvector_init();
+            myvector_set(ans, 1, b1+c1, b2+c2);
+            ctop(ans, &pA->data.c.x, &pA->data.c.y);            
         }
         return 0;
     }
@@ -156,7 +161,7 @@ int myvector_area(double *pA, const sVector *pB, const sVector *pC)
         else
         {
             double db = pB->data.p.distance;
-            double dc = pc->data.p.distance;
+            double dc = pC->data.p.distance;
             double inner_product;
             myvector_inner_product(&inner_product, pB, pC);
             (*pA) = sqrt(db*dc-inner_product);
@@ -168,7 +173,7 @@ int myvector_area(double *pA, const sVector *pB, const sVector *pC)
 
 int myvector_cvp(double *pX, double *pY, const double *pTx, const double *pTy, const sVector *pA, const sVector *pB)
 {
-    if(pB->type == pC->type == 1)
+    if(pA->type == pB->type == 1)
     {
         int lm = 0, ln = 0, rm = 0, rn = 0, i = 0, j = 0;
         double ans_x = 0, ans_y = 0, m = -1, n = -1, min = 90000;
@@ -204,7 +209,7 @@ int myvector_cvp(double *pX, double *pY, const double *pTx, const double *pTy, c
                 ans_y = pA->data.c.y*i + pB->data.c.y*j;
                 if(sqrt(pow(ans_x-(*pTx), 2)+pow(ans_y-(*pTy), 2)) < min)
                 {
-                    min = sqrt(pow(ans_x-(*pTx), 2)+pow(ans_y-(*pTy), 2);
+                    min = sqrt(pow(ans_x-(*pTx), 2)+pow(ans_y-(*pTy), 2));
                     m = i, n = j;
                 }
             }
@@ -222,6 +227,12 @@ int main()
     sVector *one = myvector_init();
     sVector *two = myvector_init();
     myvector_set(one, 2, 5, 45);
+    myvector_set(two, 2, 3, 45);
+    myvector_add(ans, one, two);
+    
+    myvector_print(ans, 1);
+    myvector_print(ans, 2);
+    /*myvector_set(one, 2, 5, 45);
     double x, y;
     ptoc(one, &x, &y);
     printf("%lf %lf\n", x, y);
@@ -231,6 +242,6 @@ int main()
     double r, a;
     ctop(two, &r, &a);
     printf("%lf %lf\n", r, a);
-    myvector_print(two, 2);
+    myvector_print(two, 2);*/
 
 }
