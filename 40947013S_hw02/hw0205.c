@@ -42,8 +42,8 @@ int myvector_set(sVector *pVector, uint8_t type, double a, double b)
     else
     {
         pVector->data.p.distance = a;
-        if(a < 0 || a >= 360) return -1;        
         pVector->data.p.angle = b;   
+        if(a < 0 || a >= 360 || b < 0) return -1;                
     }    
     pVector->type = type;
     return 0;
@@ -109,7 +109,40 @@ int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
     }*/
 }
 
+int myvector_inner_product(double *pA, const sVector *pB, const sVector *pC)
+{
+    if(pB->type == pC->type)
+    {
+        if(pB->type == 1)
+            (*pA) = pB->data.c.x*pC->data.c.x+pB->data.c.y*pC->data.c.y; 
+        else
+        {
+            double angle = pB->data.p.angle-pC->data.p.angle;
+            (*A) = pB->data.p.distance*pC->data.p.distance*cos(angle*VAL);
+        }
+        return 1;
+    }
+    return 0;
+}
 
+int myvector_area(double *pA, const sVector *pB, const sVector *pC)
+{
+    pA->type = pB->type;
+    double ans;
+    if(pB->type == pC->type)
+    {
+        if(pB->type == 1)
+            (*pA) = pB->data.c.x*pC->data.c.y-pB->data.c.x*pC->data.c.y; 
+        else
+        {
+            double angle = pB->data.p.angle-pC->data.p.angle;
+            ans = pB->data.p.distance*pC->data.p.distance*sin(angle*VAL);
+        }
+        return 1;
+    }
+}
+
+int myvector_cvp(double *pX, double *pY, const double *pTx, const double *pTy, const sVector *pA, const sVector *pB);
 
 int main()
 {
