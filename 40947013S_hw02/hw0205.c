@@ -84,15 +84,19 @@ int myvector_print(const sVector *pVector, uint8_t type)
         else
         {
             ctop(pVector, &p1, &p2);
-            printf("(%g, %g-pi)\n", p1, p2/180.0);
+            if(p2 > 0)
+                printf("(%g, %g-pi)\n", p1, p2/180.0);
+            else
+                printf("(%g, 0-pi)\n", p1);                
         }
     }
     else
     {
         if(type == 1) 
             printf("(%g, %g)\n", pVector->data.c.x,pVector->data.c.y);
-        else
+        else if(pVector->data.p.angle > 0)
             printf("(%g, %g-pi)\n", pVector->data.p.distance,pVector->data.p.angle/180.0);
+        else printf("(%g, 0-pi)\n", pVector->data.p.distance);
     }    
     return 0;
 }
@@ -228,10 +232,12 @@ int main()
     sVector *two = myvector_init();
     myvector_set(one, 2, 5, 45);
     myvector_set(two, 2, 3, 45);
-    myvector_add(ans, one, two);
-    
+    //myvector_add(ans, one, two);
+    double pA;
+    myvector_inner_product(&pA, one, two);
     myvector_print(ans, 1);
     myvector_print(ans, 2);
+    printf("%lf\n", pA);
     /*myvector_set(one, 2, 5, 45);
     double x, y;
     ptoc(one, &x, &y);
