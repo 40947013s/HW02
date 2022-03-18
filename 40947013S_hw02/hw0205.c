@@ -171,41 +171,49 @@ int myvector_cvp(double *pX, double *pY, const double *pTx, const double *pTy, c
     if(pB->type == pC->type == 1)
     {
         int lm = 0, ln = 0, rm = 0, rn = 0, i = 0, j = 0;
-        double ans_x = 0, ans_y = 0;
+        double ans_x = 0, ans_y = 0, m = -1, n = -1, min = 90000;
         while(ans_x <= *pTx || ans_y <= *pTy)
         {
-            ans_x = i*pA->data.c.x*i + i*pB->data.c.x*j;
-            ans_y = i*pA->data.c.y*i + i*pB->data.c.y*j;
+            ans_x = pA->data.c.x*i + pB->data.c.x*j;
+            ans_y = pA->data.c.y*i + pB->data.c.y*j;
             i++;
         } lm = i;
         while(ans_x <= *pTx && ans_y <= *pTy)
         {
-            ans_x = i*pA->data.c.x*i + i*pB->data.c.x*j;
-            ans_y = i*pA->data.c.y*i + i*pB->data.c.y*j;
+            ans_x = pA->data.c.x*i + pB->data.c.x*j;
+            ans_y = pA->data.c.y*i + pB->data.c.y*j;
             i++;
-        } rm = i;
+        } rm = i; i = 0;
         while(ans_x <= *pTx || ans_y <= *pTy)
         {
-            ans_x = i*pA->data.c.x*i + i*pB->data.c.x*j;
-            ans_y = i*pA->data.c.y*i + i*pB->data.c.y*j;
+            ans_x = pA->data.c.x*i + pB->data.c.x*j;
+            ans_y = pA->data.c.y*i + pB->data.c.y*j;
             j++;
-        } ln = j;
+        } ln = j; 
         while(ans_x <= *pTx && ans_y <= *pTy)
         {
-            ans_x = i*pA->data.c.x*i + i*pB->data.c.x*j;
-            ans_y = i*pA->data.c.y*i + i*pB->data.c.y*j;
+            ans_x = pA->data.c.x*i + pB->data.c.x*j;
+            ans_y = pA->data.c.y*i + pB->data.c.y*j;
             j++;
         } rn = j;
         for(int i = lm-1; i <= rm; i++)
         {
             for(int j = ln-1; j <= lm; j++)
             {
-                ans_x = i*pA->data.c.x*i + i*pB->data.c.x*j;
-                ans_y = i*pA->data.c.y*i + i*pB->data.c.y*j;
-                if()
+                ans_x = pA->data.c.x*i + pB->data.c.x*j;
+                ans_y = pA->data.c.y*i + pB->data.c.y*j;
+                if(sqrt(pow(ans_x-(*pTx), 2)+pow(ans_y-(*pTy), 2)) < min)
+                {
+                    min = sqrt(pow(ans_x-(*pTx), 2)+pow(ans_y-(*pTy), 2);
+                    m = i, n = j;
+                }
             }
         }
+        (*pX) = pA->data.c.x*m + pB->data.c.x*n;
+        (*pY) = pA->data.c.y*m + pB->data.c.y*n;
+        return 0;
     }
+    return -1;
 }
 
 int main()
