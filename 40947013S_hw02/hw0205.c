@@ -36,37 +36,29 @@ sVector *myvector_init()
 
 int myvector_set(sVector *pVector, uint8_t type, double a, double b)
 {
-    if(type != 1 && type != 2) return -1;
+    if((type != 1 && type != 2) || pVector == NULL) return -1;
     else if(type == 1) 
         pVector->data.c.x = a, pVector->data.c.y = b;
     else
     {
+        while(b < 0) b+= 360;
+        while(b >= 360) b-= 360;
         pVector->data.p.distance = a;
         pVector->data.p.angle = b;   
-        if(a < 0 || a >= 360 || b < 0) return -1;                
+        if(a < 0) return -1;                
     }    
     pVector->type = type;
     return 0;
 }
 
-int myvector_print(const sVector *pVector, uint8_t type)
-{
-    if(type != pVector->type) return -1;
-    if(type == 1) 
-        printf("(%g, %g)\n", pVector->data.c.x,pVector->data.c.y);
-    else
-        printf("(%g, %g-pi)\n", pVector->data.p.distance,pVector->data.p.angle/180.0);
-    return 0;
-}
-
-void ctop(sVector *c, double *distance, double *angle)
+void ctop(const sVector *c, double *distance, double *angle)
 {
     double x = c->data.c.x, y = c->data.c.y;
     (*distance) = sqrt(pow(x, 2)+pow(y, 2));
     (*angle) = atan(x/y)*VAL;
 }
 
-void ptoc(sVector *p, double *x, double *y)
+void ptoc(const sVector *p, double *x, double *y)
 {
     double d = p->data.p.distance, a = p->data.p.angle;
     //printf("%lf\n", a);
@@ -75,11 +67,39 @@ void ptoc(sVector *p, double *x, double *y)
     else if(a == 180.0) (*x) = -d, (*y) = 0;
     else if(a == 270.0) (*x) = 0, (*y) = -d;
     else (*x) = d*cos(a*VAL), (*y) = d*sin(a*VAL);
-    printf("%lf %lf", cos(a*VAL), sin(a*VAL));
+    //printf("%lf %lf %lf\n", a, cos(a*VAL), sin(a*VAL));
+}
+
+int myvector_print(const sVector *pVector, uint8_t type)
+{
+    if(pVector == NULL) return -1;
+    if(type != pVector->type) 
+    {
+        double p1, p2;
+        if(type == 1) 
+        {
+            ptoc(pVector, &p1, &p2);
+            printf("(%g, %g)\n", p1,p2);
+        }
+        else
+        {
+            ctop(pVector, &p1, &p2);
+            printf("(%g, %g-pi)\n", p1, p2/180.0);
+        }
+    }
+    else
+    {
+        if(type == 1) 
+            printf("(%g, %g)\n", pVector->data.c.x,pVector->data.c.y);
+        else
+            printf("(%g, %g-pi)\n", pVector->data.p.distance,pVector->data.p.angle/180.0);
+    }    
+    return 0;
 }
 
 int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
 {
+    if(pA == NULL || pB == NULL || pC == NULL) return -1;
     pA->type = pB->type;
     if(pB->type == pC->type)
     {
@@ -92,9 +112,9 @@ int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
         {
             
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return -1;
     /*if(pB->type == pC->type == 1)
     {
         pA->data.c.x = pB->data.c.x + pC->data.c.x;
@@ -111,6 +131,7 @@ int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
 
 int myvector_inner_product(double *pA, const sVector *pB, const sVector *pC)
 {
+    if(pB == NULL || pC == NULL) return -1;
     if(pB->type == pC->type)
     {
         if(pB->type == 1)
@@ -118,44 +139,56 @@ int myvector_inner_product(double *pA, const sVector *pB, const sVector *pC)
         else
         {
             double angle = pB->data.p.angle-pC->data.p.angle;
-            (*A) = pB->data.p.distance*pC->data.p.distance*cos(angle*VAL);
+            (*pA) = pB->data.p.distance*pC->data.p.distance*cos(angle*VAL);
         }
-        return 1;
+        return 0;
     }
-    return 0;
+    return -1;
 }
 
 int myvector_area(double *pA, const sVector *pB, const sVector *pC)
 {
-    pA->type = pB->type;
-    double ans;
+    if(pB == NULL || pC == NULL) return -1;
     if(pB->type == pC->type)
     {
         if(pB->type == 1)
             (*pA) = pB->data.c.x*pC->data.c.y-pB->data.c.x*pC->data.c.y; 
         else
         {
-            double angle = pB->data.p.angle-pC->data.p.angle;
-            ans = pB->data.p.distance*pC->data.p.distance*sin(angle*VAL);
+            double db = pB->data.p.distance;
+            double dc = pc->data.p.distance;
+            double inner_product;
+            myvector_inner_product(&inner_product, pB, pC);
+            (*pA) = sqrt(db*dc-inner_product);
         }
-        return 1;
+        return 0;
     }
+    return -1;
 }
 
-int myvector_cvp(double *pX, double *pY, const double *pTx, const double *pTy, const sVector *pA, const sVector *pB);
+int myvector_cvp(double *pX, double *pY, const double *pTx, const double *pTy, const sVector *pA, const sVector *pB)
+{
+    if(pB->type == pC->type == 1)
+    {
+        
+    }
+}
 
 int main()
 {
     sVector *ans = myvector_init();
     sVector *one = myvector_init();
     sVector *two = myvector_init();
-    myvector_set(one, 2, 5, 53);
+    myvector_set(one, 2, 5, 45);
     double x, y;
     ptoc(one, &x, &y);
     printf("%lf %lf\n", x, y);
-
+    myvector_print(one, 1);
+    
     myvector_set(two, 1, 3, 4);
     double r, a;
     ctop(two, &r, &a);
     printf("%lf %lf\n", r, a);
+    myvector_print(two, 2);
+
 }
