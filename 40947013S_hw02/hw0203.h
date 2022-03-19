@@ -82,7 +82,7 @@ void Kyoko_skill(void *this, void *target);
 	})
 
 #define new(TYPE, args...) TYPE ## _ctor(malloc(sizeof(TYPE)), ## args)
-#define delete(TYPE, ptr)	do				\
+#define delete(TYPE, ptr)	do\
 				{				\
 					TYPE ## _dtor(ptr);	\
 					free(ptr);		\

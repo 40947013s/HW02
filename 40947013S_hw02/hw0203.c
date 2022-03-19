@@ -11,7 +11,7 @@ extern int energy;
 
 int main(void)
 {
-    int r = 0;
+    /*int r = 0;
     int sj_cnt = SJMAX - MHSJMAX - MJMAX;
     Shoujo *sj_list[SJMAX] = {0};
     Mahoushoujo *mhsj_list[MHSJMAX] = {0};
@@ -115,7 +115,6 @@ int main(void)
         {
             Mahoushoujo *homura = mhsj_list[0] = new(Mahoushoujo, "Madoka", "Mo daijobu daiyo", Madoka_skill);
         }
-    }
-
+    }*/
     return 0;
 }
