@@ -51,7 +51,7 @@ void ptoc(const sVector *p, double *x, double *y)
 
 int myvector_print(const sVector *pVector, uint8_t type)
 {
-    if(pVector == NULL) return -1;
+    if((type != 1 && type != 2) || pVector == NULL) return -1;
     if(type != pVector->type) 
     {
         double p1, p2;
@@ -83,27 +83,34 @@ int myvector_print(const sVector *pVector, uint8_t type)
 int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
 {
     if(pA == NULL || pB == NULL || pC == NULL) return -1;
-    pA->type = pB->type;
-    if(pB->type == pC->type)
+    if(pB->type != 1 && pC->type != 1 && pB->type != 0 && pC->type != 0) return -1;
+    if(pB->type == 1 && pC->type == 1)
     {
-        if(pB->type == 1)
-        {
-            pA->data.c.x = pB->data.c.x + pC->data.c.x;
-            pA->data.c.y = pB->data.c.y + pC->data.c.y; 
-        }
-        else
-        {
-            double b1, b2, c1, c2;
-            ptoc(pB, &b1, &b2);
-            ptoc(pC, &c1, &c2);
-            sVector *ans = myvector_init();
-            myvector_set(ans, 1, b1+c1, b2+c2);
-            ctop(ans, &pA->data.c.x, &pA->data.c.y);            
-        }
-        return 0;
+        double x = pB->data.c.x + pC->data.c.x;
+        double y = pB->data.c.y + pC->data.c.y;
+        myvector_set(pA, 1, x, y);
     }
-    return -1;
-    
+    else if(pB->type == 1 && pC->type == 2)
+    {
+        double c1, c2;
+        ptoc(pC, &c1, &c2);
+        myvector_set(pA, 1, pB->data.c.x+c1, pB->data.c.y+c2);
+    }
+    else
+    {
+        double b1, b2, c1, c2;
+        ptoc(pB, &b1, &b2);
+        if(pC->type == 1)
+        {
+            c1 = pC->data.c.x; c2 = pC->data.c.y;
+        }
+        else ptoc(pC, &c1, &c2);
+        sVector *ans = myvector_init();
+        myvector_set(ans, 1, b1+c1, b2+c2);
+        ctop(ans, &b1, &b2);  
+        myvector_set(pA, 2, b1, b2);       
+    }
+    return 0;    
 }
 
 int myvector_inner_product(double *pA, const sVector *pB, const sVector *pC)

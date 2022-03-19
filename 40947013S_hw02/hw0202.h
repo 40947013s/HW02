@@ -8,11 +8,14 @@
 #include <stdbool.h>
 #include <math.h>
 
+#define exit_program printf("Invaild input.\n"),\
+exit(0);
+
 typedef struct _IEEE
 {
     bool sign;
     int32_t exponent[11];
-    int32_t fration[52];
+    int32_t fraction[52];
     int32_t sub;
 }IEEE;
 
