@@ -55,12 +55,12 @@ void Shoujo_despair(void *this);
 Mahoushoujo *Mahoushoujo_ctor(Mahoushoujo *this, const char *name, const char *wish, Skill skill);
 void Mahoushoujo_dtor(Mahoushoujo *this);
 void Mahoushoujo_do_wish(void *this);
-void Mahoushoujo_attack(Mahoushoujo *this, void *enemy); 
+void Mahoushoujo_attack(Mahoushoujo *this, Entity *enemy); 
 void Mahoushoujo_despair(void *this);
 
 Majo *Majo_ctor(Majo *this, const char *name, const char *wish);
 void Majo_dtor(Majo *this);
-void Majo_attack(Majo *this, void *enemy);
+void Majo_attack(Majo *this, Entity *enemy);
 void Majo_kekkai(Majo *this, Shoujo *sj);
 void Majo_despair(void *this);
 

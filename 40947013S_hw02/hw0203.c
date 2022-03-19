@@ -7,7 +7,7 @@
 #define MHSJMAX 4
 #define MJMAX 3
 
-extern int energy;
+int energy = 0;
 
 int main(void)
 {
@@ -116,5 +116,6 @@ int main(void)
             Mahoushoujo *homura = mhsj_list[0] = new(Mahoushoujo, "Madoka", "Mo daijobu daiyo", Madoka_skill);
         }
     }*/
+
     return 0;
 }

@@ -90,7 +90,7 @@ void Mahoushoujo_do_wish(void *this)
     return;
 }
 
-void Mahoushoujo_attack(Mahoushoujo *this, void *enemy)
+void Mahoushoujo_attack(Mahoushoujo *this, Entity *enemy)
 {
      
 }
@@ -119,7 +119,7 @@ void Majo_dtor(Majo *this)
     free(this);
 }
 
-/*void Majo_attack(Majo *this, void *enemy)
+/*void Majo_attack(Majo *this, Entity *enemy)
 {
     
 }*/
