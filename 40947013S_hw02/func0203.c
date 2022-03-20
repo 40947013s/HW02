@@ -100,7 +100,6 @@ void Mahoushoujo_attack(Mahoushoujo *this, Entity *enemy)
 void Mahoushoujo_despair(void *this)
 {
     puts("Watashii de, hondo baga\n");
-    mhsj_to_mj(this); //turn itself to Mojo????
     return;    
 }
 
