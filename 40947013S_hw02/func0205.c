@@ -17,11 +17,9 @@ int myvector_set(sVector *pVector, uint8_t type, double a, double b)
         pVector->data.c.x = a, pVector->data.c.y = b;
     else
     {
-        while(b < 0) b+= 360;
-        while(b >= 360) b-= 360;
         pVector->data.p.distance = a;
         pVector->data.p.angle = b;   
-        if(a < 0) return -1;                
+        if(a < 0 || b < 0 || b > 2) return -1;                
     }    
     pVector->type = type;
     return 0;
@@ -31,22 +29,13 @@ void ctop(const sVector *c, double *distance, double *angle)
 {
     double x = c->data.c.x, y = c->data.c.y;
     (*distance) = sqrt(pow(x, 2)+pow(y, 2));
-    if(x == 0 && y == 0) (*angle) = 0;
-    else if(x > 0 && y == 0) (*angle) = 0;
-    else if(x == 0 && y > 0) (*angle) = 90;
-    else if(x < 0 && y == 0) (*angle) = 180;
-    else if(x == 0 && y < 0) (*angle) = 270;
-    else (*angle) = atan2(y, x)*180/PI;
+    (*angle) = atan2(y, x)/PI;
 }
 
 void ptoc(const sVector *p, double *x, double *y)
 {
     double d = p->data.p.distance, a = p->data.p.angle;
-    if(a == 0.0) (*x) = d, (*y) = 0;
-    else if(a == 90.0) (*x) = 0, (*y) = d;
-    else if(a == 180.0) (*x) = -d, (*y) = 0;
-    else if(a == 270.0) (*x) = 0, (*y) = -d;
-    else (*x) = d*cos(a*PI/180), (*y) = d*sin(a*PI/180);
+    (*x) = d*cos(a*PI), (*y) = d*sin(a*PI);
 }
 
 int myvector_print(const sVector *pVector, uint8_t type)
@@ -63,19 +52,15 @@ int myvector_print(const sVector *pVector, uint8_t type)
         else
         {
             ctop(pVector, &p1, &p2);
-            if(p2 > 0)
-                printf("(%lf, %lf-pi)\n", p1, p2/180.0);
-            else
-                printf("(%lf, 0-pi)\n", p1);                
+            printf("(%lf, %lf-pi)\n", p1, p2*180);            
         }
     }
     else
     {
         if(type == 1) 
             printf("(%lf, %lf)\n", pVector->data.c.x,pVector->data.c.y);
-        else if(pVector->data.p.angle > 0)
-            printf("(%lf, %lf-pi)\n", pVector->data.p.distance,pVector->data.p.angle/180.0);
-        else printf("(%lf, 0-pi)\n", pVector->data.p.distance);
+        else 
+            printf("(%lf, %lf-pi)\n", pVector->data.p.distance, pVector->data.p.angle);
     }    
     return 0;
 }
@@ -133,7 +118,7 @@ int myvector_inner_product(double *pA, const sVector *pB, const sVector *pC)
         {
             ctop(pC, &d, &a); dc = d; ac = a;
         }        
-        (*pA) = db*dc*cos((ab-ac)*PI/180);
+        (*pA) = db*dc*cos((ab-ac)*PI);
     }
     return 0;
 }

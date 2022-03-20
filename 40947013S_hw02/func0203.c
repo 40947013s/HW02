@@ -3,7 +3,7 @@
 Entity *Entity_ctor(Entity *this)
 {
     this->hp = 100;
-    this->is_dead = Entity_is_dead;
+    this->is_dead = &Entity_is_dead;
     return this;
 }
 
@@ -25,8 +25,8 @@ Shoujo *Shoujo_ctor(Shoujo *this, const char *name, const char *wish)
     this->name = (char*)name;
     this->wish = (char*)wish;
     this->kimoji = 100;
-    this->is_dead = Entity_is_dead;
-    this->is_despair = Shoujo_is_despair;
+    this->is_dead = &Entity_is_dead;
+    this->is_despair = &Shoujo_is_despair;
     this->do_wish = Shoujo_do_wish;
     this->despair = Shoujo_despair;
     return this;
@@ -67,7 +67,7 @@ Mahoushoujo *Mahoushoujo_ctor(Mahoushoujo *this, const char *name, const char *w
     this->base.despair = Mahoushoujo_despair;
     this->atk = 100;
     this->base.base.hp *= 3;
-    this->is_dead = Entity_is_dead;
+    this->is_dead = &Entity_is_dead;
     this->do_wish = Mahoushoujo_do_wish;
     this->attack = Mahoushoujo_attack;
     this->skill = skill;
@@ -103,8 +103,8 @@ void Mahoushoujo_despair(void *this)
 Majo *Majo_ctor(Majo *this, const char *name, const char *wish)
 {
     Shoujo_ctor(&this->base, name, wish);
-    this->atk = 30;
-    this->is_dead = Entity_is_dead;
+    this->atk = 10;
+    this->is_dead = &Entity_is_dead;
     this->base.base.hp *= 50;
     this->attack = Majo_attack;
     this->kekkai = Majo_kekkai;
@@ -135,9 +135,12 @@ void Majo_despair(void *this)
 
 Majo *mhsj_to_mj(Mahoushoujo *mhsj)
 {
-    Majo *mj;
-    mj->base = mhsj->base;
-    mj->atk = mhsj->atk;   
+    char *name = mhsj->base.name;
+    char *wish = mhsj->base.wish;
+    Majo *mj = Majo_ctor(malloc(sizeof(Majo)), name, wish);
+    mj->base.base.hp = mhsj->base.base.hp;
+    mj->base.kimoji = mhsj->base.kimoji;
+    mj->atk = mhsj->atk;  
     return mj;
 }
 
@@ -169,7 +172,10 @@ void Kyoko_skill(void *this, void *target)
     Mahoushoujo *tar = target;
     if(tar->skill == Sayaka_skill)
     {
-        Kyoko->base.base.hp = 0;
-        tar->base.base.hp = 0;
+        Kyoko->base.hp = 0;
+        Kyoko->base.is_dead = &Entity_is_dead;
+        tar->base.hp = 0;
+        tar->base.is_dead = &Entity_is_dead;
     }
+    return;
 }
