@@ -29,13 +29,13 @@ void ctop(const sVector *c, double *distance, double *angle)
 {
     double x = c->data.c.x, y = c->data.c.y;
     (*distance) = sqrt(pow(x, 2)+pow(y, 2));
-    (*angle) = atan2(y, x)/PI;
+    (*angle) = atan2(y, x);
 }
 
 void ptoc(const sVector *p, double *x, double *y)
 {
     double d = p->data.p.distance, a = p->data.p.angle;
-    (*x) = d*cos(a*PI), (*y) = d*sin(a*PI);
+    (*x) = d*cos(a), (*y) = d*sin(a);
 }
 
 int myvector_print(const sVector *pVector, uint8_t type)
@@ -118,7 +118,7 @@ int myvector_inner_product(double *pA, const sVector *pB, const sVector *pC)
         {
             ctop(pC, &d, &a); dc = d; ac = a;
         }        
-        (*pA) = db*dc*cos((ab-ac)*PI);
+        (*pA) = db*dc*cos((ab-ac));
     }
     return 0;
 }

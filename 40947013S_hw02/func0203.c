@@ -1,4 +1,4 @@
-#include "hw0203.h"
+#include "madoka.h"
     
 Entity *Entity_ctor(Entity *this)
 {
@@ -38,6 +38,7 @@ void Shoujo_dtor(Shoujo *this)
     this->name = NULL;
     this->wish = NULL;
     this->kimoji = 0;
+    return;
 }
 
 int Shoujo_is_despair(void *this)
@@ -138,8 +139,7 @@ Majo *mhsj_to_mj(Mahoushoujo *mhsj)
     char *name = mhsj->base.name;
     char *wish = mhsj->base.wish;
     Majo *mj = Majo_ctor(malloc(sizeof(Majo)), name, wish);
-    mj->base.base.hp = mhsj->base.base.hp;
-    mj->base.kimoji = mhsj->base.kimoji;
+    mj->base = mhsj->base;
     mj->atk = mhsj->atk;  
     return mj;
 }
@@ -172,10 +172,10 @@ void Kyoko_skill(void *this, void *target)
     Mahoushoujo *tar = target;
     if(tar->skill == Sayaka_skill)
     {
-        Kyoko->base.hp = 0;
-        Kyoko->base.is_dead = &Entity_is_dead;
-        tar->base.hp = 0;
-        tar->base.is_dead = &Entity_is_dead;
+        Kyoko->base.base.hp = 0;
+        Kyoko->is_dead = &Entity_is_dead;
+        tar->base.base.hp = 0;
+        tar->is_dead = &Entity_is_dead;
     }
     return;
 }
