@@ -11,7 +11,7 @@ int energy = 0;
 
 int main(void)
 {
-    /*int r = 0;
+    int r = 0;
     int sj_cnt = SJMAX - MHSJMAX - MJMAX;
     Shoujo *sj_list[SJMAX] = {0};
     Mahoushoujo *mhsj_list[MHSJMAX] = {0};
@@ -29,10 +29,14 @@ int main(void)
         sj_list[i] = mhsj_list[i];
 
     sj_list[MHSJMAX] = mj_list[0];
+    
     for (int i = MHSJMAX + MJMAX; i < SJMAX; ++i)
         sj_list[i] = new(Shoujo, "shoujo", "shoujo is blessing.");
-
-    while (true)
+    /*for (int i = 0; i < SJMAX; ++i)
+        if (sj_list[i])
+            printf("%d %s\n", i, sj_list[i]->name);*/
+    
+    //while (true)
     {
         printf("--------------------------\n");
         printf("energy: %d\n", energy);
@@ -61,7 +65,7 @@ int main(void)
             }
         }
 
-        for (int i = 0; i < MJMAX; ++i)
+        /*for (int i = 0; i < MJMAX; ++i)
         {
             if (!mj_list[i])
                 continue;
@@ -114,8 +118,8 @@ int main(void)
         if (((Shoujo *)homura)->kimoji <= -80)
         {
             Mahoushoujo *homura = mhsj_list[0] = new(Mahoushoujo, "Madoka", "Mo daijobu daiyo", Madoka_skill);
-        }
-    }*/
+        }*/
+    }
 
     return 0;
 }

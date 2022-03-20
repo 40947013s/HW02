@@ -51,7 +51,7 @@ int Shoujo_is_despair(void *this)
 void Shoujo_do_wish(void *this)
 {
     Shoujo *ans = this;
-    printf("%s\n", ans->wish);
+    puts(ans->wish);
     return;
 }
 
@@ -85,19 +85,21 @@ void Mahoushoujo_dtor(Mahoushoujo *this)
 void Mahoushoujo_do_wish(void *this)
 {
     Mahoushoujo *ans = this;
-    printf("%s But nothing is good\n", ans->base.wish);
+    puts(ans->base.wish);
+    puts("But nothing is good\n");
     ans->base.kimoji -= 10;
     return;
 }
 
 void Mahoushoujo_attack(Mahoushoujo *this, Entity *enemy)
 {
-     
+    enemy->hp -= this->atk;
+    return;
 }
 
 void Mahoushoujo_despair(void *this)
 {
-    printf("Watashii de, hondo baga\n");
+    puts("Watashii de, hondo baga\n");
     mhsj_to_mj(this); //turn itself to Mojo????
     return;    
 }
@@ -119,10 +121,11 @@ void Majo_dtor(Majo *this)
     free(this);
 }
 
-/*void Majo_attack(Majo *this, Entity *enemy)
+void Majo_attack(Majo *this, Entity *enemy)
 {
-    
-}*/
+    enemy->hp -= this->atk;
+    return;
+}
 
 void Majo_kekkai(Majo *this, Shoujo *sj)
 {
@@ -143,29 +146,35 @@ Majo *mhsj_to_mj(Mahoushoujo *mhsj)
     return mj;
 }
 
-/*void Madoka_skill(void *this, void *target)
+void Madoka_skill(void *this, void *target)
 {
-    printf("Madoka become god, end.\n");
+    puts("Madoka become god, end.\n");
     return;
 }
 
 void Homura_skill(void *this, void *target)
 {
-    if(this->base.base.hp < 50)
-        printf("This round is hopeless, Homura go to
-next round.\n");
+    Shoujo *Homura = this;
+    if(Homura->base.hp < 50)
+        puts("This round is hopeless, Homura go to next round.\n");
     return;
 }
 
 void Sayaka_skill(void *this, void *target)
 {
-    this->base.base.hp += 30;
-    this->base.kimoj -= 30;
+    Shoujo *Sayaka = this;
+    Sayaka->base.hp += 30;
+    Sayaka->kimoji-= 30;
     return;
 }
 
 void Kyoko_skill(void *this, void *target)
 {
-    if(target->base.name == "Sayaka")
-        //is_dead
-}*/
+    Shoujo *Kyoko = this;
+    Shoujo *tar = target;
+    if(tar->name == "Sayaka")
+    {
+        Kyoko->base.hp = 0;
+        tar->base.hp = 0;
+    }
+}

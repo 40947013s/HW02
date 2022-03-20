@@ -3,7 +3,7 @@
 typedef struct
 {
     int hp;
-    int (*is_dead)(void *this); //透過後面的this取得is_dead
+    int (*is_dead)(void *this); 
 } Entity;
 
 typedef struct
@@ -12,10 +12,10 @@ typedef struct
     char *name;
     char *wish;
     int kimoji;
-    int (*is_dead)(void *this); //透過後面的this取得is_dead
-    int (*is_despair) (void *this); //透過後面的this取得is_despair
-    void (*do_wish) (void *this); //透過後面的this取得do_wish
-    void (*despair) (void *this); ////透過後面的this取得despair
+    int (*is_dead)(void *this); 
+    int (*is_despair) (void *this); 
+    void (*do_wish) (void *this); 
+    void (*despair) (void *this); 
 } Shoujo;
 
 typedef void (*Skill) (void *this, void *target); //把一個void的函式命名為(*Skill)並帶入(void *this, void *target)
