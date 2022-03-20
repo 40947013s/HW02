@@ -10,7 +10,6 @@ Entity *Entity_ctor(Entity *this)
 void Entity_dtor(Entity *this)
 {
     this->hp = 0;
-    free(this);
     return;
 }
 
@@ -35,11 +34,10 @@ Shoujo *Shoujo_ctor(Shoujo *this, const char *name, const char *wish)
 
 void Shoujo_dtor(Shoujo *this)
 {
-    this->base.hp = 0;
-    this->name = 0;
-    this->wish = 0;
+    Entity_dtor(&this->base);
+    this->name = NULL;
+    this->wish = NULL;
     this->kimoji = 0;
-    free(this);
 }
 
 int Shoujo_is_despair(void *this)
@@ -77,19 +75,15 @@ Mahoushoujo *Mahoushoujo_ctor(Mahoushoujo *this, const char *name, const char *w
 
 void Mahoushoujo_dtor(Mahoushoujo *this)
 {
-    this->base.base.hp = 0;
-    this->base.name = 0;
-    this->base.wish = 0;
-    this->base.kimoji = 0;
+    Shoujo_dtor(&this->base);
     this->atk = 0;
-    free(this);
 }
 
 void Mahoushoujo_do_wish(void *this)
 {
     Mahoushoujo *ans = this;
     puts(ans->base.wish);
-    puts("But nothing is good\n");
+    puts("But nothing is good");
     ans->base.kimoji -= 10;
     return;
 }
@@ -102,7 +96,7 @@ void Mahoushoujo_attack(Mahoushoujo *this, Entity *enemy)
 
 void Mahoushoujo_despair(void *this)
 {
-    puts("Watashii de, hondo baga\n");
+    puts("Watashii de, hondo baga");
     return;    
 }
 
@@ -118,13 +112,8 @@ Majo *Majo_ctor(Majo *this, const char *name, const char *wish)
 
 void Majo_dtor(Majo *this)
 {
-    this->base.base.hp = 0;
-    this->base.name = 0;
-    this->base.wish = 0;
-    this->base.kimoji = 0;
+    Shoujo_dtor(&this->base);
     this->atk = 0;
-    this->atk = 0;
-    free(this);
 }
 
 void Majo_attack(Majo *this, Entity *enemy)
@@ -154,33 +143,33 @@ Majo *mhsj_to_mj(Mahoushoujo *mhsj)
 
 void Madoka_skill(void *this, void *target)
 {
-    puts("Madoka become god, end.\n");
+    puts("Madoka become god, end.");
     return;
 }
 
 void Homura_skill(void *this, void *target)
 {
-    Shoujo *Homura = this;
-    if(Homura->base.hp < 50)
-        puts("This round is hopeless, Homura go to next round.\n");
+    Mahoushoujo *Homura = this;
+    if(Homura->base.base.hp < 50)
+        puts("This round is hopeless, Homura go to next round.");
     return;
 }
 
 void Sayaka_skill(void *this, void *target)
 {
-    Shoujo *Sayaka = this;
-    Sayaka->base.hp += 30;
-    Sayaka->kimoji-= 30;
+    Mahoushoujo *Sayaka = this;
+    Sayaka->base.base.hp += 30;
+    Sayaka->base.kimoji-= 30;
     return;
 }
 
 void Kyoko_skill(void *this, void *target)
 {
-    Shoujo *Kyoko = this;
-    Shoujo *tar = target;
-    if(tar->name == "Sayaka")
+    Mahoushoujo *Kyoko = this;
+    Mahoushoujo *tar = target;
+    if(tar->skill == Sayaka_skill)
     {
-        Kyoko->base.hp = 0;
-        tar->base.hp = 0;
+        Kyoko->base.base.hp = 0;
+        tar->base.base.hp = 0;
     }
 }
