@@ -35,7 +35,7 @@ Shoujo *Shoujo_ctor(Shoujo *this, const char *name, const char *wish)
 
 void Shoujo_dtor(Shoujo *this)
 {
-    Entity_dtor(&this->base);
+    this->base.hp = 0;
     this->name = 0;
     this->wish = 0;
     this->kimoji = 0;
@@ -77,7 +77,10 @@ Mahoushoujo *Mahoushoujo_ctor(Mahoushoujo *this, const char *name, const char *w
 
 void Mahoushoujo_dtor(Mahoushoujo *this)
 {
-    Shoujo_dtor(&this->base);
+    this->base.base.hp = 0;
+    this->base.name = 0;
+    this->base.wish = 0;
+    this->base.kimoji = 0;
     this->atk = 0;
     free(this);
 }
@@ -115,7 +118,11 @@ Majo *Majo_ctor(Majo *this, const char *name, const char *wish)
 
 void Majo_dtor(Majo *this)
 {
-    Shoujo_dtor(&this->base);
+    this->base.base.hp = 0;
+    this->base.name = 0;
+    this->base.wish = 0;
+    this->base.kimoji = 0;
+    this->atk = 0;
     this->atk = 0;
     free(this);
 }
