@@ -162,20 +162,43 @@ int myvector_cvp(double *pX, double *pY, const double *pTx, const double *pTy, c
         ptoc(pA, &x1, &y1);
     if(pB->type != 1)
         ptoc(pB, &x2, &y2);
-    det = 1.0/(x1*y2-x2*y1);
-    m = det * (y2*(*pTx)+(-x2)*(*pTy)); M = m;
-    n = det * ((-y1)*(*pTx)+x1*(*pTy)); N = n;
     
-    for(int i = 0; i < 4; i++)
+    det = 1.0/(x1*y2-x2*y1);    
+    if(x1*y2-x2*y1 == 0)
     {
-        double x = (M+position[i][0])*x1 + (N+position[i][1])*y1;
-        double y = (M+position[i][0])*y1 + (N+position[i][1])*y2;
-        if(pow(x, 2)+pow(y, 2) < min) 
+        int x = x1 != 0 ? (*pTx)/x1 : 0;
+        int y = y1 != 0 ? (*pTy)/y1 : 0;
+        int l = x <= y ? x : y;
+        int r = x > y ? x : y;
+        n = 0;
+        for(int i = l; i <= r; i++)
         {
-            min = pow(x, 2)+pow(y, 2);
-            m = M+position[i][0]; n = N+position[i][1];
+            double x = i*x1 - (*pTx);
+            double y = i*y1 - (*pTy);
+            if(pow(x, 2)+pow(y, 2) < min)
+            {
+                min = pow(x, 2)+pow(y, 2);
+                m = i;
+            }
         }
     }
+    else
+    {
+        m = det * (y2*(*pTx)+(-x2)*(*pTy)); M = m;
+        n = det * ((-y1)*(*pTx)+x1*(*pTy)); N = n;  
+        for(int i = 0; i < 4; i++)
+        {
+            double x = (M+position[i][0])*x1 + (N+position[i][1])*x2;
+            double y = (M+position[i][0])*y1 + (N+position[i][1])*y2;
+            x -= (*pTx), y -= (*pTy);
+            if(pow(x, 2)+pow(y, 2) < min) 
+            {
+                min = pow(x, 2)+pow(y, 2);
+                m = M+position[i][0]; n = N+position[i][1];
+            }
+        }
+    }
+    
     (*pX) = m * x1 + n * x2;
     (*pY) = m * y1 + n * y2;     
     return 0;
