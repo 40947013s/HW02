@@ -19,7 +19,7 @@ int myvector_set(sVector *pVector, uint8_t type, double a, double b)
     {
         pVector->data.p.distance = a;
         pVector->data.p.angle = b;   
-        if(a < 0 || b < 0 || b > 2) return -1;                
+        if(a < 0 || b < 0 || b > 2*PI) return -1;                
     }    
     pVector->type = type;
     return 0;
@@ -52,7 +52,7 @@ int myvector_print(const sVector *pVector, uint8_t type)
         else
         {
             ctop(pVector, &p1, &p2);
-            printf("(%lf, %lf-pi)\n", p1, p2*180);            
+            printf("(%lf, %lf-pi)\n", p1, p2);            
         }
     }
     else
@@ -68,7 +68,6 @@ int myvector_print(const sVector *pVector, uint8_t type)
 int myvector_add(sVector *pA, const sVector *pB, const sVector *pC)
 {
     if(pA == NULL || pB == NULL || pC == NULL) return -1;
-    if(pB->type != 1 && pC->type != 1 && pB->type != 0 && pC->type != 0) return -1;
     if(pB->type == 1 && pC->type == 1)
     {
         double x = pB->data.c.x + pC->data.c.x;
