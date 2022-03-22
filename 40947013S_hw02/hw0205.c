@@ -7,14 +7,15 @@ int main()
     sVector *two = myvector_init();
     
     myvector_set(one, 2, 4, 60*PI/180);
-    myvector_set(two, 2, 5, 37*PI/180);
+    myvector_set(two, 2, 5, 90*PI/180);
+    myvector_print(two, 2);
     /*double x, y;
     ptoc(two, &x, &y);
     printf("%lf %lf\n", x, y);*/
     
-    myvector_add(ans, one, two);
+    /*myvector_add(ans, one, two);
     myvector_print(ans, 1);
-    myvector_print(ans, 2);
+    myvector_print(ans, 2);*/
     
     /*double pA;
     myvector_inner_product(&pA, one, two);

@@ -52,7 +52,7 @@ int myvector_print(const sVector *pVector, uint8_t type)
         else
         {
             ctop(pVector, &p1, &p2);
-            printf("(%lf, %lf-pi)\n", p1, p2);            
+            printf("(%lf, %lf-pi)\n", p1, p2/PI);            
         }
     }
     else
@@ -60,7 +60,7 @@ int myvector_print(const sVector *pVector, uint8_t type)
         if(type == 1) 
             printf("(%lf, %lf)\n", pVector->data.c.x,pVector->data.c.y);
         else 
-            printf("(%lf, %lf-pi)\n", pVector->data.p.distance, pVector->data.p.angle);
+            printf("(%lf, %lf-pi)\n", pVector->data.p.distance, pVector->data.p.angle/PI);
     }    
     return 0;
 }
